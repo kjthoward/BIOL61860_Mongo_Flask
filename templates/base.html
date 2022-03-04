@@ -1,0 +1,80 @@
+<!doctype html>
+<!-- Base HTML template, mostly contains tool bar, bootstrap CSS and javascript links
+Also contains the toolbar -->
+<html>
+<head>
+  <link rel="shortcut icon" type="image/png" href="favicon.ico"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Font awesome is used for icons in the tool bar (used glyphicons previously, but bootstrap 4 removed them) -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- sweetalert2 is used for the alerts -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- sweetalert is used for alerts if the site is viewed in internet explorer as sweetalert2 doesn't work in IE -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <title>VariantDB</title>
+</head>
+<body>
+  <!-- toolbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">VariantDB</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="/search" style="color:white">
+            <span style="padding:5px" class="fa fa-search"></span> Search </a>
+          </li>
+          <span style="padding-left:15px"></span>
+        <li>
+          <a href="/add_new/API" style="color:white"><span style="padding:5px" class="fa fa-plus"></span> Add New</a>
+        </li>
+      </ul>
+    </div>
+        
+      
+    </nav>
+    <div>
+                <!-- Checks if there are any alerts and if so, displays them -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                
+                <script>
+                var isIE = false;
+                var ua = window.navigator.userAgent;
+                var old_ie = ua.indexOf('MSIE ');
+                var new_ie = ua.indexOf('Trident/');
+
+                if ((old_ie > -1) || (new_ie > -1)) {
+                isIE = true;
+                }
+                // Uses sweetalert if browser is Internet Explorer (as IE doesn't support sweetalert2)
+                if ( isIE ) {
+                swal("VariantDB", "{{ message }}");
+                }
+                // Otherwise use sweetalert2
+                else {
+                  Swal.fire({
+                  
+                      title:"VariantDB",
+                      // success , error , warning ,info
+                  
+                      text: "{{ message }}",
+                      // Custom message flashed from your flask routes
+                  
+                  })
+                }
+                </script>
+                
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <!-- End alerts -->
+    </div>
+    {% block content %}
+    {% endblock %}
+  
+</body>
+</html>

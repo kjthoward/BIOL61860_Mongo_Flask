@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+
+      <h1 class="pt-5 pb-2">Welcome to the Flask VariantDB</h1>
+
+      <p class="lead">There are currently {{ total }} variants in the database</p>
+      <!-- checks the type of the page (manual or API) and displays the appropriate information -->
+      {% if "manual" in type %}
+        <p class="lead">Use this page to manually enter a variant into the database</p>
+        
+        <p class="lead">Alternatively, <a href="/add_new/API"> click here</a> to pull the data from the dbSNP API using a dbSNP ID</p>
+              
+      {% endif %}
+      
+      {% if "API" in type %}
+        <p class="lead">Use this page to enter a dbSNP ID to pull its data into the database</p>
+        
+        <p class="lead">Alternatively, <a href="/add_new/manual"> click here</a> to enter the information manually</p>
+      {% endif %}
+      {{ wtf.quick_form(form) }}
+
+
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

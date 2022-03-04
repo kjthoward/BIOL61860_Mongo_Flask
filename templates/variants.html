@@ -1,0 +1,107 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<script>
+  // functions to sort the table by clicking on the header
+function sortTable(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("varTable");
+  switching = true;
+  // Set the sorting direction to ascending:
+  dir = "asc";
+  /* Make a loop that will continue until
+  no switching has been done: */
+  while (switching) {
+    // Start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /* Loop through all table rows (except the
+    first, which contains table headers): */
+    for (i = 1; i < (rows.length - 1); i++) {
+      // Start by saying there should be no switching:
+      shouldSwitch = false;
+      /* Get the two elements you want to compare,
+      one from current row and one from the next: */
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      /* Check if the two rows should switch place,
+      based on the direction, asc or desc: */
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /* If a switch has been marked, make the switch
+      and mark that a switch has been done: */
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      // Each time a switch is done, increase this count by 1:
+      switchcount ++;
+    } else {
+      /* If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again. */
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+
+  <table id="varTable" class="table-striped" style="border: 1px solid;padding:5px">
+    <tr style="border: 1px solid;padding:5px">
+      <!-- Each header needs the sortTable function with it's column index as an argument
+      could be done with a {{table}} like in Django, but started this was and didn't have time to change... -->
+      <th onClick="sortTable(0)" style="border: 1px solid;padding:5px"> Chromosome</th>
+      <th onClick="sortTable(1)" style="border: 1px solid;padding:5px"> Start </th>
+      <th onClick="sortTable(2)" style="border: 1px solid;padding:5px"> End </th>
+      <th onClick="sortTable(3)" style="border: 1px solid;padding:5px"> Assembly </th>
+      <th onClick="sortTable(4)" style="border: 1px solid;padding:5px"> Variant </th>
+      <th onClick="sortTable(5)" style="border: 1px solid;padding:5px"> Identifier </th>
+      <th onClick="sortTable(6)" style="border: 1px solid;padding:5px"> Most Severe Consequence </th>
+      <th onClick="sortTable(7)" style="border: 1px solid;padding:5px"> Clinical Significance </th>
+      <th onClick="sortTable(8)" style="border: 1px solid;padding:5px"> Synonyms </th>
+      <th onClick="sortTable(9)" style="border: 1px solid;padding:5px"> Evidence </th>
+      <th onClick="sortTable(10)" style="border: 1px solid;padding:5px"> MAF </th>
+    </tr>
+    
+    {% for d in data %}
+    <tr style="border: 1px solid;padding:5px">
+      <td style="border: 1px solid;padding:5px"> {{d.seq_region_name}} </td>
+      <td style="border: 1px solid;padding:5px"> {{d.start}} </td>
+      <td style="border: 1px solid;padding:5px"> {{d.end}} </td>
+      <td style="border: 1px solid;padding:5px"> {{d.assembly_name}} </td>
+      <td style="border: 1px solid;padding:5px"> {{d.allele_string}} </td>
+      <td style="border: 1px solid;padding:5px"> {{d.name}} </td>
+      <td style="border: 1px solid;padding:5px"> {{d.most_severe_consequence}} </td>
+      <td style="border: 1px solid;padding:5px"> {{d.clinical_significance}} </td>
+      <td style="border: 1px solid;padding:5px"> 
+        <!-- synonyms is an array, so loop through that and add a line break after each
+        tried passing the line break in the text but it gets escaped. Probably a better way around it but this works -->
+        {% for s in d.synonyms %}
+          {{s}}
+          <br>
+        {% endfor %} 
+      </td>
+      <td style="border: 1px solid;padding:5px"> {{d.evidence}} </td>
+      <td style="border: 1px solid;padding:5px"> {{d.MAF}} </td>
+      
+    </tr>
+    {% endfor %}
+  </table>
+      
+{% endblock %}
